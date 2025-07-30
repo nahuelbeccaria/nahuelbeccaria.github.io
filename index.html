@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPS - Valeria Beccaria Contabilidad</title>
+    <title>Encuesta - Valeria Beccaria Contabilidad</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f435e6e3-633e-4c5f-9687-074cca77e787.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 0.75rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
         .nps-scale-btn {
             transition: all 0.3s ease;
         }
@@ -15,21 +28,31 @@
         #chart-container {
             height: 300px;
         }
+        header {
+            background: linear-gradient(to right, #1e3a8a, #1e40af);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem 0.75rem 0 0;
+            margin-bottom: 0;
+        }
+        header h1, header p {
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <header class="text-center mb-10">
             <div class="flex justify-center mb-4">
-                <img src="https://placehold.co/200x50" alt="Logo de Valeria Beccaria Contabilidad - Estilo profesional con tipografía seria y colores azules corporativos" class="h-12">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/34a285d2-660f-4012-ad0b-51879f68c5f8.png" alt="Logo profesional de Valeria Beccaria Contabilidad" class="h-16">
             </div>
-            <h1 class="text-3xl font-bold text-gray-800">Net Promoter Score</h1>
-            <p class="text-gray-600">Para nuestros servicios contables</p>
+            <p class="text-white text-opacity-90 text-xl">Encuesta de satisfacción</p>
         </header>
 
         <!-- Voting Section -->
-        <section id="voting-section" class="bg-white rounded-lg shadow-md p-6 mb-8 max-w-2xl mx-auto">
+        <section id="voting-section" class="bg-white bg-opacity-90 border border-gray-200 rounded-lg p-8 mb-8 max-w-2xl mx-auto">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">¿Qué tan probable es que recomiendes nuestros servicios contables?</h2>
             <p class="text-gray-600 mb-6">Selecciona un valor entre 0 (nada probable) y 10 (extremadamente probable)</p>
             
@@ -72,16 +95,16 @@
         </section>
 
         <!-- Results Section - Admin View -->
-        <section id="admin-section" class="hidden bg-white rounded-lg shadow-md p-6 mb-8">
+        <section id="admin-section" class="hidden bg-white bg-opacity-90 rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-6">Panel de Administración</h2>
             
             <div class="flex flex-col md:flex-row gap-8">
                 <!-- NPS Score Summary -->
                 <div class="bg-blue-50 p-6 rounded-lg flex-1">
-                    <h3 class="text-lg font-medium text-gray-800 mb-4">Resultado NPS</h3>
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Resultados</h3>
                     <div class="text-center">
                         <div id="nps-score" class="text-5xl font-bold text-blue-600 mb-2">0</div>
-                        <div class="text-gray-600">Puntuación Net Promoter Score</div>
+                        <div class="text-gray-600">Puntuación de satisfacción</div>
                     </div>
                     
                     <div class="mt-6 space-y-4">
@@ -153,7 +176,7 @@
         </section>
         
         <!-- Login for Admin -->
-        <section id="admin-login" class="hidden bg-white rounded-lg shadow-md p-6 mb-8 max-w-md mx-auto">
+        <section id="admin-login" class="hidden bg-white bg-opacity-90 rounded-lg shadow-md p-6 mb-8 max-w-md mx-auto">
             <h2 class="text-xl font-semibold text-gray-800 mb-6">Acceso Administrador</h2>
             
             <form id="login-form" class="space-y-4">
@@ -198,11 +221,25 @@
             const DB_NAME = 'nps_valeria_beccaria';
             const ADMIN_PASSWORD = 'contabilidad123'; // Demo password - change in production
             
-            // Initialize database
-            let db = JSON.parse(localStorage.getItem(DB_NAME)) || {
+            // Initialize database with cloud sync
+            let db = {
                 votes: [],
                 lastId: 0
             };
+            async function syncDatabase() {
+                try {
+                    const response = await fetch('YOUR_SERVER_ENDPOINT');
+                    if (response.ok) {
+                        const remoteData = await response.json();
+                        if (remoteData) {
+                            db = remoteData;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error syncing database:', error);
+                }
+            }
+            syncDatabase();
             
             // UI Elements
             const votingSection = document.getElementById('voting-section');
@@ -259,22 +296,36 @@
                 document.getElementById('voter-info').scrollIntoView({ behavior: 'smooth' });
             }
             
-            function saveVote(name, email, comments) {
+            async function saveVote(name, email, comments) {
                 const vote = {
                     id: ++db.lastId,
                     name: name,
                     email: email,
                     score: selectedScore,
                     comments: comments,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    device: navigator.userAgent
                 };
                 
-                db.votes.push(vote);
-                localStorage.setItem(DB_NAME, JSON.stringify(db));
-                
-                showToast('¡Gracias por tu votación!');
-                resetVotingForm();
-                updateAdminView();
+                try {
+                    const response = await fetch('YOUR_SERVER_ENDPOINT', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(vote)
+                    });
+                    if (response.ok) {
+                        db.votes.push(vote);
+                        showToast('¡Gracias por tu votación!');
+                        resetVotingForm();
+                        await syncDatabase();
+                        updateAdminView();
+                    }
+                } catch (error) {
+                    console.error('Error saving vote:', error);
+                    showToast('Error al guardar voto. Intente nuevamente.');
+                }
             }
             
             function resetVotingForm() {
@@ -482,9 +533,10 @@
             
             exportBtn.addEventListener('click', exportData);
             
-            // Initialize
-            updateChart();
+            // Initialize with sync
+            syncDatabase().then(updateChart);
         });
     </script>
-</html>
 </body>
+</html>
+```
