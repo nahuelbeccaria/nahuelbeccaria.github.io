@@ -1,542 +1,197 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta - Valeria Beccaria Contabilidad</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f435e6e3-633e-4c5f-9687-074cca77e787.png');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 0.75rem;
-            margin: 2rem auto;
-            max-width: 1200px;
-        }
-        .nps-scale-btn {
-            transition: all 0.3s ease;
-        }
-        .nps-scale-btn:hover {
-            transform: scale(1.1);
-        }
-        #chart-container {
-            height: 300px;
-        }
-        header {
-            background: linear-gradient(to right, #1e3a8a, #1e40af);
-            color: white;
-            padding: 2rem;
-            border-radius: 0.75rem 0.75rem 0 0;
-            margin-bottom: 0;
-        }
-        header h1, header p {
-            color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-    </style>
-</head>
-<body class="min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="text-center mb-10">
-            <div class="flex justify-center mb-4">
-                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/34a285d2-660f-4012-ad0b-51879f68c5f8.png" alt="Logo profesional de Valeria Beccaria Contabilidad" class="h-16">
-            </div>
-            <p class="text-white text-opacity-90 text-xl">Encuesta de satisfacción</p>
-        </header>
-
-        <!-- Voting Section -->
-        <section id="voting-section" class="bg-white bg-opacity-90 border border-gray-200 rounded-lg p-8 mb-8 max-w-2xl mx-auto">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">¿Qué tan probable es que recomiendes nuestros servicios contables?</h2>
-            <p class="text-gray-600 mb-6">Selecciona un valor entre 0 (nada probable) y 10 (extremadamente probable)</p>
-            
-            <div class="flex justify-between mb-8">
-                <span class="text-sm text-gray-500">Nada probable</span>
-                <span class="text-sm text-gray-500">Extremadamente probable</span>
-            </div>
-            
-            <div class="flex flex-wrap justify-center gap-2 mb-8">
-                <!-- Buttons 0-10 -->
-                <template id="score-template">
-                    <button class="nps-scale-btn w-12 h-12 rounded-full font-bold border-2 border-gray-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" value="0">0</button>
-                </template>
-            </div>
-            
-            <div id="voter-info" class="hidden mt-6">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Por favor ingresa tus datos</h3>
-                
-                <form id="voter-form" class="space-y-4">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Nombre completo</label>
-                        <input type="text" id="name" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                        <input type="email" id="email" name="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    
-                    <div>
-                        <label for="comments" class="block text-sm font-medium text-gray-700">Comentarios (opcional)</label>
-                        <textarea id="comments" name="comments" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Enviar votación
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- Results Section - Admin View -->
-        <section id="admin-section" class="hidden bg-white bg-opacity-90 rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-6">Panel de Administración</h2>
-            
-            <div class="flex flex-col md:flex-row gap-8">
-                <!-- NPS Score Summary -->
-                <div class="bg-blue-50 p-6 rounded-lg flex-1">
-                    <h3 class="text-lg font-medium text-gray-800 mb-4">Resultados</h3>
-                    <div class="text-center">
-                        <div id="nps-score" class="text-5xl font-bold text-blue-600 mb-2">0</div>
-                        <div class="text-gray-600">Puntuación de satisfacción</div>
-                    </div>
-                    
-                    <div class="mt-6 space-y-4">
-                        <div class="flex items-center">
-                            <span class="w-24 text-sm font-medium text-gray-700">Promotores (9-10)</span>
-                            <div class="flex-1 bg-gray-200 rounded-full h-4">
-                                <div id="promoters-bar" class="bg-green-500 h-4 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <span id="promoters-percent" class="w-12 text-right text-sm font-medium">0%</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <span class="w-24 text-sm font-medium text-gray-700">Pasivos (7-8)</span>
-                            <div class="flex-1 bg-gray-200 rounded-full h-4">
-                                <div id="passives-bar" class="bg-yellow-400 h-4 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <span id="passives-percent" class="w-12 text-right text-sm font-medium">0%</span>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <span class="w-24 text-sm font-medium text-gray-700">Detractores (0-6)</span>
-                            <div class="flex-1 bg-gray-200 rounded-full h-4">
-                                <div id="detractors-bar" class="bg-red-500 h-4 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <span id="detractors-percent" class="w-12 text-right text-sm font-medium">0%</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Chart -->
-                <div class="bg-white border border-gray-200 p-6 rounded-lg flex-1">
-                    <h3 class="text-lg font-medium text-gray-800 mb-4">Distribución de votos</h3>
-                    <div id="chart-container">
-                        <canvas id="score-distribution-chart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Voters Table -->
-            <div class="mt-8">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Registro de votantes</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Puntuación</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comentarios</th>
-                            </tr>
-                        </thead>
-                        <tbody id="voters-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Voters will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Admin Controls -->
-            <div class="mt-6 flex justify-end space-x-4">
-                <button id="export-btn" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                    Exportar datos
-                </button>
-                <button id="toggle-admin-btn" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                    Salir del panel
-                </button>
-            </div>
-        </section>
-        
-        <!-- Login for Admin -->
-        <section id="admin-login" class="hidden bg-white bg-opacity-90 rounded-lg shadow-md p-6 mb-8 max-w-md mx-auto">
-            <h2 class="text-xl font-semibold text-gray-800 mb-6">Acceso Administrador</h2>
-            
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="admin-password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                    <input type="password" id="admin-password" name="admin-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Ingresar
-                </button>
-            </form>
-            
-            <div class="mt-4 text-center">
-                <button id="show-voting-btn" class="text-blue-600 hover:text-blue-800 focus:outline-none">
-                    ← Volver a la votación
-                </button>
-            </div>
-        </section>
-        
-        <!-- Admin Access Link -->
-        <div class="text-center mt-8">
-            <button id="admin-access-btn" class="text-gray-500 hover:text-gray-700 focus:outline-none text-sm">
-                Acceso administrador
-            </button>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 transform translate-y-4">
-        <div class="flex items-center">
-            <span id="toast-message">¡Votación registrada con éxito!</span>
-        </div>
-    </div>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Data storage
-            const DB_NAME = 'nps_valeria_beccaria';
-            const ADMIN_PASSWORD = 'contabilidad123'; // Demo password - change in production
-            
-            // Initialize database with cloud sync
-            let db = {
-                votes: [],
-                lastId: 0
-            };
-            async function syncDatabase() {
-                try {
-                    const response = await fetch('YOUR_SERVER_ENDPOINT');
-                    if (response.ok) {
-                        const remoteData = await response.json();
-                        if (remoteData) {
-                            db = remoteData;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error syncing database:', error);
-                }
-            }
-            syncDatabase();
-            
-            // UI Elements
-            const votingSection = document.getElementById('voting-section');
-            const adminSection = document.getElementById('admin-section');
-            const adminLogin = document.getElementById('admin-login');
-            const adminAccessBtn = document.getElementById('admin-access-btn');
-            const showVotingBtn = document.getElementById('show-voting-btn');
-            const toggleAdminBtn = document.getElementById('toggle-admin-btn');
-            const loginForm = document.getElementById('login-form');
-            const voterForm = document.getElementById('voter-form');
-            const votersTableBody = document.getElementById('voters-table-body');
-            const toast = document.getElementById('toast');
-            const exportBtn = document.getElementById('export-btn');
-            
-            // Score buttons container
-            const scoresContainer = document.querySelector('.flex-wrap.justify-center.gap-2.mb-8');
-            
-            // Generate score buttons 0-10
-            for (let i = 0; i <= 10; i++) {
-                const btn = document.getElementById('score-template').content.firstElementChild.cloneNode(true);
-                btn.textContent = i;
-                btn.value = i;
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    selectScore(this);
-                });
-                scoresContainer.appendChild(btn);
-            }
-            
-            // Remove the template
-            document.getElementById('score-template').remove();
-            
-            // Selected score tracking
-            let selectedScore = null;
-            
-            // Functions
-            function selectScore(btn) {
-                // Reset all buttons
-                document.querySelectorAll('.nps-scale-btn').forEach(b => {
-                    b.classList.remove('bg-blue-500', 'text-white');
-                    b.classList.add('bg-white', 'text-gray-800');
-                });
-                
-                // Style selected button
-                btn.classList.add('bg-blue-500', 'text-white');
-                btn.classList.remove('bg-white', 'text-gray-800');
-                
-                selectedScore = parseInt(btn.value);
-                
-                // Show voter info form
-                document.getElementById('voter-info').classList.remove('hidden');
-                
-                // Scroll to form
-                document.getElementById('voter-info').scrollIntoView({ behavior: 'smooth' });
-            }
-            
-            async function saveVote(name, email, comments) {
-                const vote = {
-                    id: ++db.lastId,
-                    name: name,
-                    email: email,
-                    score: selectedScore,
-                    comments: comments,
-                    date: new Date().toISOString(),
-                    device: navigator.userAgent
-                };
-                
-                try {
-                    const response = await fetch('YOUR_SERVER_ENDPOINT', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(vote)
-                    });
-                    if (response.ok) {
-                        db.votes.push(vote);
-                        showToast('¡Gracias por tu votación!');
-                        resetVotingForm();
-                        await syncDatabase();
-                        updateAdminView();
-                    }
-                } catch (error) {
-                    console.error('Error saving vote:', error);
-                    showToast('Error al guardar voto. Intente nuevamente.');
-                }
-            }
-            
-            function resetVotingForm() {
-                voterForm.reset();
-                document.getElementById('voter-info').classList.add('hidden');
-                document.querySelectorAll('.nps-scale-btn').forEach(b => {
-                    b.classList.remove('bg-blue-500', 'text-white');
-                    b.classList.add('bg-white', 'text-gray-800');
-                });
-                selectedScore = null;
-            }
-            
-            function showToast(message) {
-                const toastMessage = document.getElementById('toast-message');
-                toastMessage.textContent = message;
-                toast.classList.remove('opacity-0', 'translate-y-4');
-                toast.classList.add('opacity-100', 'translate-y-0');
-                
-                setTimeout(() => {
-                    toast.classList.remove('opacity-100', 'translate-y-0');
-                    toast.classList.add('opacity-0', 'translate-y-4');
-                }, 3000);
-            }
-            
-            function calculateNPS() {
-                const totalVotes = db.votes.length;
-                if (totalVotes === 0) return { nps: 0, promoters: 0, passives: 0, detractors: 0 };
-                
-                const promoters = db.votes.filter(v => v.score >= 9).length;
-                const passives = db.votes.filter(v => v.score >= 7 && v.score <= 8).length;
-                const detractors = db.votes.filter(v => v.score <= 6).length;
-                
-                const nps = Math.round(((promoters - detractors) / totalVotes) * 100);
-                
-                return {
-                    nps,
-                    promoters: Math.round((promoters / totalVotes) * 100),
-                    passives: Math.round((passives / totalVotes) * 100),
-                    detractors: Math.round((detractors / totalVotes) * 100)
-                };
-            }
-            
-            function updateAdminView() {
-                const results = calculateNPS();
-                
-                // Update NPS score
-                document.getElementById('nps-score').textContent = results.nps;
-                
-                // Update percentage bars
-                document.getElementById('promoters-bar').style.width = results.promoters + '%';
-                document.getElementById('passives-bar').style.width = results.passives + '%';
-                document.getElementById('detractors-bar').style.width = results.detractors + '%';
-                
-                // Update percentage labels
-                document.getElementById('promoters-percent').textContent = results.promoters + '%';
-                document.getElementById('passives-percent').textContent = results.passives + '%';
-                document.getElementById('detractors-percent').textContent = results.detractors + '%';
-                
-                // Update voters table
-                votersTableBody.innerHTML = '';
-                db.votes.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(vote => {
-                    const row = document.createElement('tr');
-                    
-                    const getScoreClass = (score) => {
-                        if (score >= 9) return 'bg-green-100 text-green-800';
-                        if (score >= 7) return 'bg-yellow-100 text-yellow-800';
-                        return 'bg-red-100 text-red-800';
-                    };
-                    
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${vote.name}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${vote.email}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getScoreClass(vote.score)}">
-                                ${vote.score}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(vote.date).toLocaleDateString()}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${vote.comments || '-'}</td>
-                    `;
-                    
-                    votersTableBody.appendChild(row);
-                });
-                
-                // Update chart
-                updateChart();
-            }
-            
-            let scoreChart = null;
-            
-            function updateChart() {
-                const ctx = document.getElementById('score-distribution-chart').getContext('2d');
-                
-                // Count votes for each score 0-10
-                const scoreCounts = Array(11).fill(0);
-                db.votes.forEach(vote => {
-                    scoreCounts[vote.score]++;
-                });
-                
-                if (scoreChart) {
-                    scoreChart.destroy();
-                }
-                
-                scoreChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                        datasets: [{
-                            label: 'Cantidad de votos',
-                            data: scoreCounts,
-                            backgroundColor: [
-                                '#EF4444', '#EF4444', '#EF4444', '#EF4444', '#EF4444', '#EF4444', // 0-6 (red)
-                                '#F59E0B', '#F59E0B', // 7-8 (yellow)
-                                '#10B981', '#10B981' // 9-10 (green)
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-            }
-            
-            function exportData() {
-                const dataStr = JSON.stringify(db.votes, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `nps_valeria_beccaria_${new Date().toISOString().slice(0,10)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                showToast('Datos exportados correctamente');
-            }
-            
-            // Event Listeners
-            voterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('name').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const comments = document.getElementById('comments').value.trim();
-                
-                if (!name || !email) {
-                    showToast('Por favor completa todos los campos obligatorios');
-                    return;
-                }
-                
-                if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                    showToast('Por favor ingresa un correo electrónico válido');
-                    return;
-                }
-                
-                saveVote(name, email, comments);
-            });
-            
-            adminAccessBtn.addEventListener('click', function() {
-                votingSection.classList.add('hidden');
-                adminLogin.classList.remove('hidden');
-                adminSection.classList.add('hidden');
-            });
-            
-            showVotingBtn.addEventListener('click', function() {
-                adminLogin.classList.add('hidden');
-                votingSection.classList.remove('hidden');
-                adminSection.classList.add('hidden');
-            });
-            
-            toggleAdminBtn.addEventListener('click', function() {
-                adminSection.classList.add('hidden');
-                adminLogin.classList.remove('hidden');
-            });
-            
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const password = document.getElementById('admin-password').value;
-                
-                if (password === ADMIN_PASSWORD) {
-                    adminLogin.classList.add('hidden');
-                    votingSection.classList.add('hidden');
-                    adminSection.classList.remove('hidden');
-                    updateAdminView();
-                } else {
-                    showToast('Contraseña incorrecta');
-                }
-            });
-            
-            exportBtn.addEventListener('click', exportData);
-            
-            // Initialize with sync
-            syncDatabase().then(updateChart);
-        });
-    </script>
-</body>
-</html>
-```
+@@ -1,33 +1,29 @@
+ <!DOCTYPE html>
+ <html lang="es">
+ <head>
+-    <meta charset="UTF-8">
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1" />
+     <title>NPS - Valeria A. Beccaria - Contadora Pública</title>
+-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+-    <link rel="stylesheet" href="styles.css">
++    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
++    <link rel="stylesheet" href="styles.css" />
+ </head>
+ <body>
+     <!-- Página Principal -->
+     <div id="homePage" class="page active">
+         <div class="background-overlay"></div>
+-        
++
+         <!-- Header -->
+         <header class="header">
+             <div class="header-content">
+                 <div class="header-left">
+                     <div class="logo-small">
+-                        <div class="logo-overlay"></div>
+                         <div class="logo-content">
+-                            <div class="logo-initials">• V | B •</div>
+-                            <div class="logo-title">CONTADORA</div>
++                            <div class="logo-initials" style="color: black;">• V | B •</div>
++                            <div class="logo-title" style="color: black;">Valeria A. Beccaria</div>
++                            <div class="logo-subtitle" style="color: black;">CONTADORA PÚBLICA</div>
+                         </div>
+                     </div>
+-                    <div class="header-info">
+-                        <h1>Valeria A. Beccaria</h1>
+-                        <p>Contadora Pública - Tu opinión nos ayuda a mejorar</p>
+-                    </div>
+                 </div>
+                 <button class="btn-admin" onclick="showAdminLogin()">Panel Admin</button>
+             </div>
+         </header>
+@@ -35,42 +31,35 @@
+         <!-- Main Content -->
+         <main class="main-content">
+             <!-- Logo Principal -->
+             <div class="logo-main-container">
+-                <div class="logo-main">
+-                    <div class="logo-overlay-main"></div>
+-                    <div class="logo-content-main">
++                <div class="logo-main" style="background: white;">
++                    <div class="logo-content-main" style="color: black;">
+                         <div class="logo-initials-main">• V | B •</div>
+                         <div class="logo-name">Valeria A. Beccaria</div>
+                         <div class="logo-profession">CONTADORA PÚBLICA</div>
+-                        <div class="logo-divider"></div>
+-                        <div class="logo-services">Asesoramiento Contable</div>
+-                        <div class="logo-services">Impuesto - Liquidación De Sueldos</div>
+                     </div>
+                 </div>
+             </div>
+ 
+             <div class="welcome-section">
+-                <h2>Bienvenido a Mis<br><span class="text-blue">Servicios Contables</span></h2>
++                <h2>Bienvenido a Mis<br /><span class="text-black">Servicios Contables</span></h2>
+                 <p>Ofrezco servicios contables profesionales y personalizados para tu empresa. Tu satisfacción es mi prioridad.</p>
+             </div>
+ 
+             <!-- Services Grid -->
+             <div class="services-grid">
+                 <div class="service-card">
+-                    <div class="service-icon blue"></div>
+-                    <h3>Contabilidad General</h3>
+-                    <p>Llevamos la contabilidad completa de tu empresa con precisión y transparencia.</p>
++                    <h3>Sobre</h3>
++                    <p>Asesoramiento Contable.<br />Impuesto - liquidación De Sueldos</p>
+                 </div>
+                 <div class="service-card">
+-                    <div class="service-icon green"></div>
+-                    <h3>Declaraciones Fiscales</h3>
+-                    <p>Preparamos y presentamos todas tus declaraciones fiscales a tiempo.</p>
++                    <h3>Sobre</h3>
++                    <p>Asesoramiento Contable.<br />Impuesto - liquidación De Sueldos</p>
+                 </div>
+                 <div class="service-card">
+-                    <div class="service-icon purple"></div>
+-                    <h3>Asesoría Financiera</h3>
+-                    <p>Te brindamos asesoría experta para optimizar tus finanzas empresariales.</p>
++                    <h3>Sobre</h3>
++                    <p>Asesoramiento Contable.<br />Impuesto - liquidación De Sueldos</p>
+                 </div>
+             </div>
+ 
+             <!-- CTA Section -->
+@@ -87,21 +76,17 @@
+ 
+     <!-- Formulario NPS -->
+     <div id="npsPage" class="page">
+         <div class="background-overlay"></div>
+-        
++
+         <div class="nps-container">
+             <!-- Logo NPS -->
+             <div class="logo-nps-container">
+-                <div class="logo-nps">
+-                    <div class="logo-overlay-nps"></div>
+-                    <div class="logo-content-nps">
++                <div class="logo-nps" style="background: white;">
++                    <div class="logo-content-nps" style="color: black;">
+                         <div class="logo-initials-nps">• V | B •</div>
+                         <div class="logo-name-nps">Valeria A. Beccaria</div>
+                         <div class="logo-profession-nps">CONTADORA PÚBLICA</div>
+-                        <div class="logo-divider-nps"></div>
+-                        <div class="logo-services-nps">Asesoramiento Contable</div>
+-                        <div class="logo-services-nps">Impuesto - Liquidación De Sueldos</div>
+                     </div>
+                 </div>
+             </div>
+ 
+@@ -138,19 +123,19 @@
+ 
+                     <div class="form-row">
+                         <div class="form-group">
+                             <label for="name">Nombre completo *</label>
+-                            <input type="text" id="name" name="name" placeholder="Tu nombre completo" required>
++                            <input type="text" id="name" name="name" placeholder="Tu nombre completo" required />
+                         </div>
+                         <div class="form-group">
+                             <label for="email">Email *</label>
+-                            <input type="email" id="email" name="email" placeholder="tu@email.com" required>
++                            <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+                         </div>
+                     </div>
+ 
+                     <div class="form-group">
+                         <label for="phone">Teléfono (opcional)</label>
+-                        <input type="tel" id="phone" name="phone" placeholder="Tu número de teléfono">
++                        <input type="tel" id="phone" name="phone" placeholder="Tu número de teléfono" />
+                     </div>
+ 
+                     <div id="messageContainer" class="message-container"></div>
+ 
+@@ -168,14 +153,13 @@
+ 
+     <!-- Login Admin -->
+     <div id="adminLoginPage" class="page">
+         <div class="background-overlay"></div>
+-        
++
+         <div class="login-container">
+             <div class="logo-login-container">
+-                <div class="logo-login">
+-                    <div class="logo-overlay-login"></div>
+-                    <div class="logo-content-login">
++                <div class="logo-login" style="background: white;">
++                    <div class="logo-content-login" style="color: black;">
+                         <div class="logo-initials-login">• V | B •</div>
+                         <div class="logo-name-login">Valeria A.</div>
+                         <div class="logo-profession-login">CONTADORA</div>
+                     </div>
+@@ -190,9 +174,9 @@
+ 
+                 <form id="loginForm" class="login-form">
+                     <div class="form-group">
+                         <label for="password">Contraseña</label>
+-                        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
++                        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required />
+                     </div>
+ 
+                     <div id="loginError" class="error-message"></div>
+ 
+@@ -210,15 +194,14 @@
+ 
+     <!-- Panel Admin -->
+     <div id="adminPage" class="page">
+         <div class="background-overlay"></div>
+-        
++
+         <div class="admin-container">
+             <div class="admin-header">
+                 <div class="admin-header-left">
+-                    <div class="logo-admin">
+-                        <div class="logo-overlay-admin"></div>
+-                        <div class="logo-content-admin">
++                    <div class="logo-admin" style="background: white;">
++                        <div class="logo-content-admin" style="color: black;">
+                             <div class="logo-initials-admin">• V | B •</div>
+                             <div class="logo-name-admin">Valeria A.</div>
+                             <div class="logo-profession-admin">CONTADORA</div>
+                         </div>
+@@ -294,5 +277,5 @@
+     </div>
+ 
+     <script src="script.js"></script>
+ </body>
+-</html>
++</html>
