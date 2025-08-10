@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Promoter Score - Servicio Contable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .score-button {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .score-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .score-button.selected {
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e7eb;
+        }
+        
+        .logo-main {
+            font-size: 28px;
+            line-height: 0.8;
+            margin-bottom: 2px;
+        }
+        
+        .logo-name {
+            font-size: 8px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        
+        .text-shadow-lg {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+    
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        .logo-title {
+            font-size: 6px;
+            text-align: center;
+            line-height: 1;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+    
+        .admin-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .workspace-bg {
+            background-image: url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="workspace-bg">
+    <div class="min-h-screen py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header con Logo -->
+            <div class="text-center mb-8 fade-in">
+                <div class="logo mx-auto mb-4">
+                    <div class="logo-main">•V|B•</div>
+                    <div class="logo-name">VALERIA A. BECCARIA</div>
+                    <div class="logo-title">CONTADORA PÚBLICA</div>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 text-shadow-lg">Servicio Contable</h1>
+                <p class="text-white">Tu opinión es importante para nosotros</p>
+            </div>
+
+            <!-- Imagen de fondo del escritorio -->
+            <div class="mb-8 fade-in">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80fde815-2b1a-460b-ac08-d4e8f3b7c19d.png" alt="Vista superior de un escritorio de trabajo moderno con laptop, taza de café blanca, planta verde, documentos contables y calculadora sobre superficie de madera clara" class="w-full h-64 object-cover rounded-lg shadow-lg" />
+            </div>
+
+            <!-- Panel de Votación -->
+            <div id="voting-panel" class="glass-effect rounded-2xl p-8 mb-8 shadow-xl fade-in">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
+                    ¿Qué tan probable es que recomiendes nuestro Servicio Contable a un colega o amigo?
+                </h2>
+                
+                <div class="text-center mb-8">
+                    <div class="flex justify-between text-sm text-gray-600 mb-4">
+                        <span>Nada probable</span>
+                        <span>Extremadamente probable</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-11 gap-2 max-w-2xl mx-auto mb-6">
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(0)">0</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(1)">1</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(2)">2</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(3)">3</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(4)">4</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(5)">5</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(6)">6</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(7)">7</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(8)">8</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(9)">9</button>
+                        <button class="score-button bg-white rounded-lg p-3 text-lg font-semibold text-gray-700 shadow-md hover:shadow-lg" onclick="selectScore(10)">10</button>
+                    </div>
+                </div>
+
+                <div class="max-w-md mx-auto space-y-4">
+                    <input type="text" id="voter-name" placeholder="Tu nombre (opcional)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <textarea id="voter-comment" placeholder="Comentarios adicionales (opcional)" class="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    <button id="submit-vote" onclick="submitVote()" disabled class="w-full bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold cursor-not-allowed transition-all duration-300">
+                        Enviar Voto
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Confirmación -->
+            <div id="thank-you-panel" class="glass-effect rounded-2xl p-8 mb-8 shadow-xl hidden fade-in">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">✓</div>
+                    <h2 class="text-2xl font-bold text-green-600 mb-4">¡Gracias por tu voto!</h2>
+                    <p class="text-gray-600 mb-6">Tu opinión nos ayuda a mejorar nuestros servicios contables.</p>
+                    <button onclick="resetForm()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg transition-colors">
+                        Votar de nuevo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Administración -->
+            <div id="admin-panel" class="glass-effect rounded-2xl p-8 shadow-xl fade-in hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Panel de Administración</h3>
+                    <div class="space-x-2">
+                        <button onclick="exportData()" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors">
+                            Exportar Datos
+                        </button>
+                        <button onclick="logoutAdmin()" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-lg p-4 text-center shadow-md">
+                        <div class="text-2xl font-bold text-blue-600" id="total-votes">0</div>
+                        <div class="text-sm text-gray-600">Total Votos</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 text-center shadow-md">
+                        <div class="text-2xl font-bold text-green-600" id="nps-score">0</div>
+                        <div class="text-sm text-gray-600">NPS Score</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 text-center shadow-md">
+                        <div class="text-2xl font-bold text-yellow-600" id="avg-score">0</div>
+                        <div class="text-sm text-gray-600">Promedio</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 text-center shadow-md">
+                        <div class="text-2xl font-bold text-purple-600" id="promoters">0%</div>
+                        <div class="text-sm text-gray-600">Promotores</div>
+                    </div>
+                </div>
+
+                <!-- Lista de Votos -->
+                <div class="bg-white rounded-lg p-4 shadow-md">
+                    <h4 class="font-semibold mb-4 text-gray-800">Registro de Votos</h4>
+                    <div id="votes-list" class="admin-panel space-y-3">
+                        <p class="text-gray-500 text-center py-8">No hay votos registrados aún</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de Acceso Administrativo -->
+            <div class="text-center mt-8 fade-in">
+                <button onclick="showAdminLogin()" class="bg-gray-700 hover:bg-gray-800 text-white py-2 px-6 rounded-lg transition-colors text-sm">
+                    Acceso Administrativo
+                </button>
+            </div>
+
+            <!-- Modal de Login Administrativo -->
+            <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+                <div class="glass-effect rounded-2xl p-8 m-4 max-w-md w-full">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Acceso Administrativo</h3>
+                    <div class="space-y-4">
+                        <input type="password" id="admin-password" placeholder="Contraseña de administrador" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <div class="flex space-x-2">
+                            <button onclick="loginAdmin()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors">
+                                Ingresar
+                            </button>
+                            <button onclick="hideAdminLogin()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedScore = null;
+        let votes = [];
+        let isAdminLoggedIn = false;
+        const ADMIN_PASSWORD = 'servicio2024';
+        const API_URL = 'http://localhost:3000/submit-vote';
+        const API_KEY = '$2a$10$pllxj4XmOD8Oj7s5rUHKNeWc9zbLIaKjvpGfXqbQiQ4qjFHsWFRBu';
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVotes();
+        });
+
+        // Sistema híbrido: API + LocalStorage con sincronización
+        async function loadVotes() {
+            try {
+                // Cargar desde localStorage primero (instantáneo)
+                const localVotes = JSON.parse(localStorage.getItem('nps-votes-shared') || '[]');
+                votes = localVotes;
+                updateStatistics();
+                renderVotesList();
+
+                // Luego intentar sincronizar con API
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': API_KEY,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const apiVotes = data.record.votes || [];
+                    
+                    // Combinar votos (evitar duplicados por ID)
+                    const combinedVotes = [...localVotes];
+                    apiVotes.forEach(apiVote => {
+                        if (!combinedVotes.find(v => v.id === apiVote.id)) {
+                            combinedVotes.push(apiVote);
+                        }
+                    });
+                    
+                    // Ordenar por timestamp
+                    combinedVotes.sort((a, b) => a.id - b.id);
+                    
+                    if (combinedVotes.length !== votes.length) {
+                        votes = combinedVotes;
+                        localStorage.setItem('nps-votes-shared', JSON.stringify(votes));
+                        updateStatistics();
+                        renderVotesList();
+                    }
+                }
+            } catch (error) {
+                console.error('Error syncing with API:', error);
+                // Continuar con datos locales
+            }
+             }  
+              function saveVotes() {
+                // Envío individual del votoGP
+                 fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'X-Master-Key': API_KEY,
+                        'Content-Type': 'application/json'
+                   },
+                    body: JSON.stringify(votes[votes.length -1]) // envío el último voto
+              });
+              localStorage.setItem('nps-votes-shared', JSON.stringify(votes));
+            }  
+            
+         // Funciones de administración
+        function showAdminLogin() {
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+            document.getElementById('admin-login-modal').classList.add('flex');
+            document.getElementById('admin-password').focus();
+        }
+
+        function hideAdminLogin() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+            document.getElementById('admin-login-modal').classList.remove('flex');
+            document.getElementById('admin-password').value = '';
+        }
+
+        function loginAdmin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                hideAdminLogin();
+                document.getElementById('admin-panel').classList.remove('hidden');
+                updateStatistics();
+                renderVotesList();
+            } else {
+                alert('Contraseña incorrecta');
+                document.getElementById('admin-password').value = '';
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        // Permitir login con Enter
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('admin-login-modal').classList.contains('hidden')) {
+                loginAdmin();
+            }
+        });
+
+        function selectScore(score) {
+            selectedScore = score;
+            
+            // Remover selección anterior
+            document.querySelectorAll('.score-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Seleccionar el botón actual
+            event.target.classList.add('selected');
+            
+            // Habilitar botón de envío
+            const submitBtn = document.getElementById('submit-vote');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Voto';
+            submitBtn.className = 'w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-300';
+        }
+
+        async function submitVote() {
+            if (selectedScore === null) return;
+
+            // Deshabilitar botón temporalmente
+            const submitBtn = document.getElementById('submit-vote');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+
+            const voterName = document.getElementById('voter-name').value || 'Anónimo';
+            const voterComment = document.getElementById('voter-comment').value || '';
+            
+            const vote = {
+                id: Date.now(),
+                score: selectedScore,
+                name: voterName,
+                comment: voterComment,
+                timestamp: new Date().toLocaleString('es-ES'),
+                device: navigator.userAgent.includes('Mobile') ? 'Móvil' : 'Computadora'
+            };
+
+            votes.push(vote);
+            await saveVotes();
+
+            // Mostrar panel de agradecimiento
+            document.getElementById('voting-panel').classList.add('hidden');
+            document.getElementById('thank-you-panel').classList.remove('hidden');
+
+            // Actualizar estadísticas
+            updateStatistics();
+            renderVotesList();
+        }
+
+        function resetForm() {
+            selectedScore = null;
+            document.getElementById('voter-name').value = '';
+            document.getElementById('voter-comment').value = '';
+            document.getElementById('submit-vote').disabled = true;
+            document.getElementById('submit-vote').className = 'w-full bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold cursor-not-allowed transition-all duration-300';
+            document.getElementById('submit-vote').textContent = 'Enviar Voto';
+            
+            document.querySelectorAll('.score-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            document.getElementById('voting-panel').classList.remove('hidden');
+            document.getElementById('thank-you-panel').classList.add('hidden');
+        }
+
+        function updateStatistics() {
+            const totalVotes = votes.length;
+            document.getElementById('total-votes').textContent = totalVotes;
+
+            if (totalVotes === 0) {
+                document.getElementById('nps-score').textContent = '0';
+                document.getElementById('avg-score').textContent = '0';
+                document.getElementById('promoters').textContent = '0%';
+                return;
+            }
+
+            // Calcular NPS
+            const promoters = votes.filter(v => v.score >= 9).length;
+            const detractors = votes.filter(v => v.score <= 6).length;
+            const npsScore = Math.round(((promoters - detractors) / totalVotes) * 100);
+
+            // Calcular promedio
+            const avgScore = (votes.reduce((sum, v) => sum + v.score, 0) / totalVotes).toFixed(1);
+
+            // Calcular porcentaje de promotores
+            const promotersPercentage = Math.round((promoters / totalVotes) * 100);
+
+            document.getElementById('nps-score').textContent = npsScore;
+            document.getElementById('avg-score').textContent = avgScore;
+            document.getElementById('promoters').textContent = promotersPercentage + '%';
+        }
+
+        function renderVotesList() {
+            const votesList = document.getElementById('votes-list');
+            
+            if (votes.length === 0) {
+                votesList.innerHTML = '<p class="text-gray-500 text-center py-8">No hay votos registrados aún</p>';
+                return;
+            }
+
+            const votesHTML = votes.slice(-20).reverse().map(vote => {
+                const categoryColor = vote.score >= 9 ? 'text-green-600' : vote.score <= 6 ? 'text-red-600' : 'text-yellow-600';
+                const category = vote.score >= 9 ? 'Promotor' : vote.score <= 6 ? 'Detractor' : 'Neutral';
+                
+                return `
+                    <div class="border-l-4 ${vote.score >= 9 ? 'border-green-500' : vote.score <= 6 ? 'border-red-500' : 'border-yellow-500'} pl-4 py-2">
+                        <div class="flex justify-between items-start mb-1">
+                            <div class="font-semibold">${vote.name}</div>
+                            <div class="text-sm text-gray-500">${vote.timestamp}</div>
+                        </div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">Puntuación: ${vote.score}</span>
+                            <span class="${categoryColor} text-sm font-medium">${category}</span>
+                            <span class="text-xs text-gray-400">${vote.device}</span>
+                        </div>
+                        ${vote.comment ? `<p class="text-gray-600 text-sm mt-1">"${vote.comment}"</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            votesList.innerHTML = votesHTML;
+        }
+
+        function exportData() {
+            if (!isAdminLoggedIn) {
+                alert('Debes iniciar sesión como administrador');
+                return;
+            }
+            
+            if (votes.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+
+            const csvContent = [
+                ['Nombre', 'Puntuación', 'Comentario', 'Fecha', 'Dispositivo'],
+                ...votes.map(vote => [
+                    vote.name,
+                    vote.score,
+                    vote.comment.replace(/"/g, '""'),
+                    vote.timestamp,
+                    vote.device
+                ])
+            ].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `nps-servicio-contable-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Limpiar datos (función de administrador)
+        async function clearAllData() {
+            if (!isAdminLoggedIn) {
+                alert('Debes iniciar sesión como administrador');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.')) {
+                votes = [];
+                await saveVotes();
+                localStorage.removeItem('nps-votes-backup');
+                updateStatistics();
+                renderVotesList();
+                alert('Todos los datos han sido eliminados.');
+            }
+        }
+
+        // Función para acceso rápido de administrador (doble click en logo)
+        document.querySelector('.logo').addEventListener('dblclick', function() {
+            if (isAdminLoggedIn) {
+                const action = confirm('¿Quieres limpiar todos los datos? OK = Sí, Cancelar = No');
+                if (action) {
+                    clearAllData();
+                }
+            } else {
+                showAdminLogin();
+            }
+        });
+    </script>
+</body>
+</html>
+
+```
